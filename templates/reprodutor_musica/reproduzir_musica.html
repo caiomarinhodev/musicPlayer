@@ -1,0 +1,50 @@
+{% extends 'reprodutor_musica/base.html' %}
+
+{% block content %}
+    <h1 class="mb-4">Reproduzir Música</h1>
+
+    <div class="row">
+        {% for musica in musicas %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ forloop.counter }} - {{ musica.nome }}</h5>
+                        <audio id="audio-{{ forloop.counter }}" src="{{ musica.arquivo.url }}"></audio>
+                        <div class="btn-group">
+                            <button class="btn btn-primary btn-play" data-audio="audio-{{ forloop.counter }}">Play
+                            </button>
+                            <button class="btn btn-secondary btn-pause" data-audio="audio-{{ forloop.counter }}">Pause
+                            </button>
+                            <button class="btn btn-danger btn-stop" data-audio="audio-{{ forloop.counter }}">Stop
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $(".btn-play").click(function () {
+                var audioId = $(this).data("audio");
+                console.log(audioId)
+                var audio = document.getElementById(audioId);
+                audio.play();
+            });
+
+            $(".btn-pause").click(function () {
+                var audioId = $(this).data("audio");
+                var audio = document.getElementById(audioId);
+                audio.pause();
+            });
+
+            $(".btn-stop").click(function () {
+                var audioId = $(this).data("audio");
+                var audio = document.getElementById(audioId);
+                audio.pause();
+                audio.currentTime = 0;
+            });
+        });
+    </script>
+{% endblock %}
