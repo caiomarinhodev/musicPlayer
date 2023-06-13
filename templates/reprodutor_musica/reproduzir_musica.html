@@ -1,5 +1,17 @@
 {% extends 'reprodutor_musica/base.html' %}
+<style>
+    .custom-range::-webkit-slider-thumb {
+        background: #505050 !important;
+    }
 
+    .custom-range::-moz-range-thumb {
+        background: #505050 !important;
+    }
+
+    .custom-range::-ms-thumb {
+        background: #505050 !important;
+    }
+</style>
 {% block content %}
     <h1 class="mb-4">Reproduzir Música</h1>
 
@@ -7,8 +19,12 @@
         {% for musica in musicas %}
             <div class="col-md-4 mb-4">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-body" style="background-color: antiquewhite;">
                         <h5 class="card-title">{{ forloop.counter }} - {{ musica.nome }}</h5>
+                        <div class="mt-3">
+                            <input type="range" class="form-range" min="0" max="100" value="0"
+                                   id="range-{{ forloop.counter }}">
+                        </div>
                         <audio id="audio-{{ forloop.counter }}" src="{{ musica.arquivo.url }}"></audio>
                         <div class="btn-group">
                             <button class="btn btn-primary btn-play" data-audio="audio-{{ forloop.counter }}"><i
@@ -40,13 +56,27 @@
                 audio.volume = $(this).val() / 100;
             });
 
+            $("input[type='range']").change(function () {
+                var audioId = $(this).attr("id").replace("range-", "");
+                console.log('audioId', audioId);
+                var audio = document.getElementById("audio-" + audioId);
+                var value = $(this).val() / 100;
+                audio.currentTime = audio.duration * value;
+            });
+
+            $("audio").on("timeupdate", function () {
+                var audioId = $(this).attr("id").replace("audio-", "");
+                var range = $("#range-" + audioId);
+                var value = (this.currentTime / this.duration) * 100;
+                range.val(value);
+            });
+
 
             $(".btn-play").click(function () {
                 $(this).addClass("active");
                 $('.btn-pause').removeClass("active");
                 $('.btn-stop').removeClass("active");
                 var audioId = $(this).data("audio");
-                console.log(audioId)
                 var audio = document.getElementById(audioId);
                 audio.play();
             });
