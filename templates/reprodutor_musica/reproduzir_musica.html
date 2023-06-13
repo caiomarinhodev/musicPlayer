@@ -11,12 +11,20 @@
                         <h5 class="card-title">{{ forloop.counter }} - {{ musica.nome }}</h5>
                         <audio id="audio-{{ forloop.counter }}" src="{{ musica.arquivo.url }}"></audio>
                         <div class="btn-group">
-                            <button class="btn btn-primary btn-play" data-audio="audio-{{ forloop.counter }}">Play
+                            <button class="btn btn-primary btn-play" data-audio="audio-{{ forloop.counter }}"><i
+                                    class="fa fa-play"></i> Play
                             </button>
-                            <button class="btn btn-secondary btn-pause" data-audio="audio-{{ forloop.counter }}">Pause
+                            <button class="btn btn-secondary btn-pause" data-audio="audio-{{ forloop.counter }}"><i
+                                    class="fa fa-pause"></i> Pause
                             </button>
-                            <button class="btn btn-danger btn-stop" data-audio="audio-{{ forloop.counter }}">Stop
+                            <button class="btn btn-danger btn-stop" data-audio="audio-{{ forloop.counter }}"><i
+                                    class="fa fa-stop"></i> Stop
                             </button>
+                        </div>
+                        <div class="volume-container">
+                            <span class="volume-label">Volume</span>
+                            <input type="range" min="0" max="100" value="100" class="volume"
+                                   data-slider="audio-{{ forloop.counter }}">
                         </div>
                     </div>
                 </div>
@@ -26,7 +34,17 @@
 
     <script>
         $(document).ready(function () {
+            $('.volume').change(function () {
+                var audioId = $(this).data("slider");
+                var audio = document.getElementById(audioId);
+                audio.volume = $(this).val() / 100;
+            });
+
+
             $(".btn-play").click(function () {
+                $(this).addClass("active");
+                $('.btn-pause').removeClass("active");
+                $('.btn-stop').removeClass("active");
                 var audioId = $(this).data("audio");
                 console.log(audioId)
                 var audio = document.getElementById(audioId);
@@ -34,17 +52,26 @@
             });
 
             $(".btn-pause").click(function () {
+                $(this).addClass("active");
+                $('.btn-play').removeClass("active");
+                $('.btn-stop').removeClass("active");
                 var audioId = $(this).data("audio");
                 var audio = document.getElementById(audioId);
                 audio.pause();
             });
 
             $(".btn-stop").click(function () {
+                $(this).addClass("active");
+                $('.btn-pause').removeClass("active");
+                $('.btn-play').removeClass("active");
                 var audioId = $(this).data("audio");
                 var audio = document.getElementById(audioId);
                 audio.pause();
                 audio.currentTime = 0;
             });
         });
+    </script>
+    <script>
+
     </script>
 {% endblock %}
